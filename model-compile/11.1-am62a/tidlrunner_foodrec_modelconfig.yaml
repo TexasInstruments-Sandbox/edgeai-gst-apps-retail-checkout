@@ -1,0 +1,98 @@
+task_type: detection
+input_dataset: coco
+dataloader:
+  # name: coco_detection_dataloader
+  # path: ./data/datasets/vision/coco
+  name: image_files_dataloader
+  path: ./data/datasets/vision/food-rec/images
+preprocess:
+  resize:
+  - 512
+  - 512
+  crop:
+  - 512
+  - 512
+  data_layout: NCHW
+  reverse_channels: false
+  backend: cv2
+  interpolation: null
+  resize_with_pad: false
+  pad_color: 0
+session:
+  session_name: onnxrt
+  target_device: AM62A
+  input_optimization: true
+  input_data_layout: NCHW
+  input_mean: false
+  input_scale: false
+  runtime_options:
+    advanced_options:quantization_scale_type: 4 
+    tensor_bits: 8
+    accuracy_level: 1
+    advanced_options:high_resolution_optimization: 0
+    advanced_options:pre_batchnorm_fold: 1
+    advanced_options:calibration_frames: 12
+    advanced_options:calibration_iterations: 12
+    advanced_options:activation_clipping: 1
+    advanced_options:weight_clipping: 1
+    advanced_options:bias_calibration: 1
+    advanced_options:output_feature_16bit_names_list: '640, 648, 656, 664, 672, 680, 636, 644, 652, 660, 668, 676'
+    advanced_options:params_16bit_names_list: ''
+    advanced_options:add_data_convert_ops: 0
+    object_detection:meta_arch_type: 3
+    object_detection:meta_layers_names_list: food-model_ssd_mobilenetv2_lite_512x512_20201214_model.prototxt
+  model_path: food-model.onnx #ssd_mobilenetv2_lite_512x512_20201214_model.onnx
+  model_id: od-8029
+  input_details: null
+  output_details: null
+  num_inputs: 1
+postprocess:
+  reshape_list:
+  - - -1
+    - 5
+  - - -1
+    - 1
+  formatter:
+    src_indices:
+    - 5
+    - 4
+    dst_indices:
+    - 4
+    - 5
+    name: DetectionBoxSL2BoxLS
+  resize_with_pad: false
+  normalized_detections: false
+  shuffle_indices: null
+  squeeze_axis: null
+  ignore_index: null
+  logits_bbox_to_bbox_ls: false
+  keypoint: false
+  object6dpose: false
+metric:
+  label_offset_pred:
+    0: 0
+    1: 1
+    2: 2
+    3: 3
+    4: 4
+    5: 5
+    6: 6
+    7: 7
+    8: 8
+    9: 9
+    10: 10
+    11: 11
+    12: 12
+model_info:
+  metric_reference:
+    accuracy_ap[.5:.95]%: 50.0
+  model_shortlist: 0
+  compact_name: food-rec-ssd-lite-mobv2-mmdet-coco-512x512
+  shortlisted: false
+  recommended: false
+common:
+  surgery: 
+    # simplify_model: 0
+    # simplify_mode: 0
+    model_surgery: 0
+  task_type: detection
