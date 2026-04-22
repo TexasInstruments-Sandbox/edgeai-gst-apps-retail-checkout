@@ -39,9 +39,12 @@ systemctl stop weston
 # setup the camera
 ../scripts/setup_cameras.sh
 
-if [ ! -d ./food-detection-model-mobv2ssd ]; then
+#MODEL_PATH=./food-detection-mode-mobv2ssd
+MODEL_PATH=../model-compile/11.1-am62a/
+
+if [ ! -d $MODEL_PATH ]; then
     echo 'Model not found; Downloading food detection model'
     ./download_food_detection_model.sh
 fi
 
-python3 retail_vision_app.py -m ./food-detection-model-mobv2ssd -nl -c usb-1080p -d /dev/video-usb-cam0
+python3 retail_vision_app.py -m $MODEL_PATH -nl -c usb-1080p -d /dev/video-usb-cam0

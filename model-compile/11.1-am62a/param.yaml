@@ -163,3 +163,4 @@ session:
   target_device: AM62A
   target_machine: pc
   tidl_offload: true
+task_type: detection
